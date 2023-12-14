@@ -9,11 +9,11 @@ body {
 }
 
  #canvas {
-  background-color: black;;
-  
+  background: url("img/space.jpeg");
+  background-size: cover;
 } 
 
-.ball {
+/* .ball {
   background-color: orange;
   width: 50px;
   height: 50px;
@@ -23,7 +23,7 @@ body {
   margin: 0px;
   left: 15%;
   transform: translateX(-50%);
-}
+} */
 
 .ground {
   background-color: green;
@@ -33,12 +33,12 @@ body {
   top: 500px;
 }
 
-.click {
+/* .click {
   position: absolute;
   animation: click is forwards;
-}
+} */
 
-@keyframes click {
+/* @keyframes click {
   0% {
     transform: scale(0);
     opacity: 1;
@@ -48,4 +48,4 @@ body {
     transform: scale(30);
     opacity: 0;
   }
-}
+} */

@@ -19,25 +19,28 @@ const mouse = {
   y: undefined,
 };
 //
-
+let speedX = Math.random() * 2;
+let speedY = 1;
 canvas.addEventListener("click", (e) => {
   mouse.x = e.x;
   mouse.y = e.y;
-  ballArray.push(new Ball());
+  ballArray.push(new Ball(speedX, speedY, mouse.y));
 });
 
+let y = mouse.y;
 
 //класс Ball
 class Ball {
-  constructor() {
+  constructor(speedX, speedY, y) {
     this.x = mouse.x;
-    this.y = mouse.y;
-    this.size = 20;
-    this.speedX = 1;
-    this.speedY = 1;
+    this.y = y;
+    this.size = Math.random() * 50;
+    this.speedX = Math.random() * 2;
+    this.speedY = speedY;
   }
   update() {
-    this.speedY+=gravity;
+    this.draw;
+    this.speedY += gravity;
     this.x += this.speedX;
     this.y += this.speedY;
 
@@ -48,25 +51,28 @@ class Ball {
       this.speedX *= -1;
     }
     if (
-        this.y + this.speedY > canvas.height - this.size ||
-        this.y + this.speedY < this.size
-      ) {
-        this.speedY *= -1;
-      }
-      if (this.y>canvas.height-this.size){ //Вот тут надо еще подумать над методикой
-        this.y=canvas.height-this.size;
-        this.speedY = 0;
-        this.speedX = 0;
-      }
+      this.y + this.speedY > canvas.height - this.size ||
+      this.y + this.speedY < this.size
+    ) {
+      this.speedY *= -0.99;
+    }
+    if (this.y > canvas.height - this.size) {
+      this.y = canvas.height - this.size;
+      this.speedY = 0;
+      this.speedX = 0;
+    }
+    return speedY;
   }
+
   draw() {
     ctx.beginPath();
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "rgb(227, 189, 246)";
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = "#ffffff";
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
     ctx.fill();
     ctx.closePath();
   }
- 
 }
 //конец класс Ball
 
@@ -82,34 +88,14 @@ function handle() {
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   handle();
-  myReq=requestAnimationFrame(animate);
+  // setTimeout(function greet() {
+  //   if (ballArray.length>=1 && JSON.parse((ballArray[ballArray.length-1].speedY))==0 ) {
+  //   cancelAnimationFrame(myReq)
+  //  }
+  //   }, 15000)
+  myReq = requestAnimationFrame(animate);
+  // if (ballArray.length>=1 && JSON.parse((ballArray[ballArray.length-1].speedY))==0) {
+  //   cancelAnimationFrame(myReq) }
 }
 
 animate();
-
-// const ball = document.querySelector(".ball");
-// let x_coord = 1;
-// let dx_coord = 1;
-// let y_coord = 1;
-// let dy_coord = 1;
-// const gravity = 0.5;
-
-// const bounce = () => {
-//   myReq = requestAnimationFrame(bounce);
-//   dy_coord += gravity;
-//   y_coord += dy_coord;
-//   x_coord += dx_coord;
-//   if (x_coord > 270 || x_coord<1 ) {
-//     dx_coord *= -1;
-//   }
-//   if (y_coord > 450) {
-//     dy_coord *= -1;
-//   }
-//   ball.style.top = y_coord + "px";
-//   ball.style.left = x_coord + "px";
-//   if (y_coord > 451) {
-//     cancelAnimationFrame(myReq);
-//   }
-// };
-
-// bounce();
