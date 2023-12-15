@@ -14,8 +14,10 @@ Demonstration is [here](https://famous-empanada-69f2cb.netlify.app)
    #canvas { 
   background: url("img/space.jpeg");
   background-size: cover;}
-```
+  
+
 * Creating a new ball after click (copy of class Ball)
+  
 ```
 var mouse = {
   x: 0,
@@ -27,7 +29,7 @@ canvas.addEventListener("click", function (e) {
   var ball = new Ball();
   ballArray.push(ball);
 });
-```
+
 * Make animation
 
 ```
