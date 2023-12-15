@@ -28,9 +28,11 @@ canvas.addEventListener("click", function (e) {
   var ball = new Ball();
   ballArray.push(ball);
 });
+```
 
 
 * Make animation
+
 ```
 function handle() {
   let i: number;
@@ -45,6 +47,7 @@ function animate() {
   handle();
   requestAnimationFrame(animate);
 }
+```
 
 
 
