@@ -85,11 +85,6 @@ function handle() {
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   handle();
-  // setTimeout(function greet() {
-  //   if (ballArray.length>=1 && JSON.parse((ballArray[ballArray.length-1].speedY))==0 ) {
-  //   cancelAnimationFrame(myReq)
-  //  }
-  //   }, 10000)
   requestAnimationFrame(animate);
 }
 
