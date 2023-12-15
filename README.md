@@ -7,7 +7,7 @@ Develop a web application using html5 canvas, where users can click on the scree
 Demonstration is [here](https://famous-empanada-69f2cb.netlify.app)
 
 **Steps**
-- [x] Creating a canvas
+- [x] Creating a canvas **HTML,CSS**
   ```
   <canvas id="canvas"></canvas> 
   
@@ -16,7 +16,7 @@ Demonstration is [here](https://famous-empanada-69f2cb.netlify.app)
   background-size: cover;}
   
 
-- [x] Creating a new ball in balls array after click (copy of class Ball)
+- [x] Creating a new ball in balls array after click (copy of class Ball) **TypeScript**
 ```
 var mouse = {
   x: 0,
@@ -31,7 +31,7 @@ canvas.addEventListener("click", function (e) {
 ```
 
 
-- [x] Make animation
+- [x] Make animation **Typescript**
 
 ```
 function handle() {
@@ -51,15 +51,15 @@ function animate() {
 }
 ```
 
-* Transformation typescript in javascript by command *tsc script.js*
-* Сonnecting js file to html
+- [x] Transformation typescript in javascript by command *tsc script.js*
+- [x] Сonnecting js file to html  **HTML**
   ```
    <script src="script.js"></script>
   ```
+- [ ] Stop animation
 
-## Some troubles
+## Some troubles with "Stop animation"
 
-- [] Stop animation
 
 > <strong style="green">Note</strong><br/>
 The function **animation()** (whichworks cyclically) does not stop after the ball hits the ground. I tried to use setInterval, but face new trouble, where function was stopped after some time and new balls could not be created. You could see using code below.
