@@ -41,7 +41,8 @@ function handle() {
     ballArray[i].update();
   }
 }
-/// *functions draw(), updated() described in class "Ball"*
+
+/// *FUNCTIONS draw(), updated() DESCRIBED IN CLASS "Ball"*
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -58,4 +59,13 @@ function animate() {
 
 ## Some troubles
 
-> `Note#0969DA`
+> <strong style="green">Note</strong><br/>
+The function **animation()** (whichworks cyclically) does not stop after the ball hits the ground. I tried to use setInterval, but face new trouble, where function was stopped after some time and new balls could not be created. You could see using code below.
+
+```
+ setTimeout(function greet() {
+     if (ballArray.length>=1 && JSON.parse((ballArray[ballArray.length-1].speedY))==0 ) {
+     cancelAnimationFrame(myReq)
+  }
+}, 10000)
+```
