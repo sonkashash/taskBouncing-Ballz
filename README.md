@@ -7,7 +7,7 @@ Develop a web application using html5 canvas, where users can click on the scree
 Demonstration is [here](https://famous-empanada-69f2cb.netlify.app)
 
 **Steps**
-* Creating a canvas
+- [x] Creating a canvas
   ```
   <canvas id="canvas"></canvas> 
   
@@ -16,7 +16,7 @@ Demonstration is [here](https://famous-empanada-69f2cb.netlify.app)
   background-size: cover;}
   
 
-* Creating a new ball in balls array after click (copy of class Ball)
+- [x] Creating a new ball in balls array after click (copy of class Ball)
 ```
 var mouse = {
   x: 0,
@@ -31,7 +31,7 @@ canvas.addEventListener("click", function (e) {
 ```
 
 
-* Make animation
+- [x] Make animation
 
 ```
 function handle() {
@@ -58,6 +58,8 @@ function animate() {
   ```
 
 ## Some troubles
+
+- [] Stop animation
 
 > <strong style="green">Note</strong><br/>
 The function **animation()** (whichworks cyclically) does not stop after the ball hits the ground. I tried to use setInterval, but face new trouble, where function was stopped after some time and new balls could not be created. You could see using code below.
