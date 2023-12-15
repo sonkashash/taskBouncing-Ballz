@@ -16,8 +16,7 @@ Demonstration is [here](https://famous-empanada-69f2cb.netlify.app)
   background-size: cover;}
   
 
-* Creating a new ball after click (copy of class Ball)
-  
+* Creating a new ball in balls array after click (copy of class Ball)
 ```
 var mouse = {
   x: 0,
@@ -32,7 +31,6 @@ canvas.addEventListener("click", function (e) {
 
 
 * Make animation
-
 ```
 function handle() {
   let i: number;
