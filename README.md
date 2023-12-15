@@ -30,6 +30,7 @@ canvas.addEventListener("click", function (e) {
   ballArray.push(ball);
 });
 
+
 * Make animation
 
 ```
@@ -46,6 +47,6 @@ function animate() {
   handle();
   requestAnimationFrame(animate);
 }
-```
+
 
 
