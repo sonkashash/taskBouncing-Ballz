@@ -41,7 +41,8 @@ function handle() {
     ballArray[i].update();
   }
 }
-/// functions draw(), updated() described in class "Ball"
+/// *functions draw(), updated() described in class "Ball"*
+
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   handle();
@@ -49,5 +50,10 @@ function animate() {
 }
 ```
 
+* Transformation typescript in javascript by command *tsc script.js*
+* Сonnecting js file to html
+  ```
+   <script src="script.js"></script>
+  ```
 
 
