@@ -1,9 +1,10 @@
 "use strict";
 
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d");
-var ballArray = [];
-var gravity = 0.9;
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+let ballArray = [];
+let gravity = 1;
+const textStart = document.querySelector(".text");
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -20,13 +21,14 @@ canvas.addEventListener("click", function (e) {
   };
   var ball = new Ball(mouse.x, mouse.y);
   ballArray.push(ball);
+  textStart.classList.add("hide");
 });
 
 class Ball {
   constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.radius = Math.random() * 50;
+    this.radius = Math.random() * 80;
     this.speedX = Math.random() * 2;
     this.speedY = Math.random() * 2;
   }
@@ -43,7 +45,7 @@ class Ball {
 
   update() {
     this.draw();
-    this.speedY += gravity; 
+    this.speedY += gravity;
 
     this.x += this.speedX;
     this.y += this.speedY;
@@ -56,8 +58,9 @@ class Ball {
         const distance = Math.sqrt(dx * dx + dy * dy);
         const minDistance = this.radius + otherBall.radius;
 
-        if (distance < minDistance) {
+        if (distance <= minDistance) {
           const collisionAngle = Math.atan2(dy, dx);
+
           const overlap = minDistance - distance;
 
           this.x -= overlap * Math.cos(collisionAngle);
@@ -98,23 +101,23 @@ class Ball {
       }
     }
 
-    const friction = 0.05;
+    const friction = 0.03;
     this.speedX *= 1 - friction;
 
     if (this.x + this.radius > canvas.width) {
-      this.x = canvas.width - this.radius; 
-      this.speedX *= -1; 
+      this.x = canvas.width - this.radius;
+      this.speedX *= -1;
     } else if (this.x - this.radius < 0) {
-      this.x = this.radius; 
-      this.speedX *= -1; 
+      this.x = this.radius;
+      this.speedX *= -1;
     }
 
     if (this.y + this.radius > canvas.height) {
-      this.y = canvas.height - this.radius; 
-      this.speedY *= -1; 
+      this.y = canvas.height - this.radius;
+      this.speedY *= -1;
     } else if (this.y - this.radius < 0) {
-      this.y = this.radius; 
-      this.speedY *= -1; 
+      this.y = this.radius;
+      this.speedY *= -1;
     }
   }
 }
@@ -136,4 +139,5 @@ animate();
 const clearButton = document.querySelector(".clear-button");
 clearButton.addEventListener("click", function () {
   ballArray = [];
+  textStart.classList.remove("hide");
 });
