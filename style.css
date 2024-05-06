@@ -1,4 +1,56 @@
+ * {
+   box-sizing: border-box;
+   margin: 0;
+   padding: 0;
+ }
+
+ *:not(button):hover {
+   cursor: url(img/planet_cursor.svg), auto;
+ }
+
  #canvas {
-  background: url("img/space.jpeg");
-  background-size: cover;
-} 
+   background: url("img/space.jpeg");
+   background-size: cover;
+ }
+
+ .text {
+   font-family: "Jersey 10", sans-serif;
+   position: absolute;
+   top: 30px;
+   left: 35%;
+   font-size: 50px;
+   color: white;
+   text-shadow: 0 0 20px #fff, 0 0 80px rgb(227, 189, 246);
+   animation: appear_text 5s infinite;
+ }
+
+ @keyframes appear_text {
+   from {
+     opacity: 0;
+   }
+
+   to {
+     opacity: 1;
+     scale: 1.2;
+   }
+ }
+
+ .clear-button {
+   position: absolute;
+   top: 100px;
+   left: 43%;
+   padding: 10px 20px;
+   font-size: 20px;
+   background-color: #fff;
+   box-shadow: 0px 5px 10px 0px rgba(255, 255, 255, 0.5);
+   color: rgb(212, 131, 252);
+   border: 1px solid rgb(227, 189, 246);
+   border-radius: 10px;
+ }
+
+ .clear-button:hover {
+   background-color: rgb(227, 189, 246);
+   color: #fff;
+   border: 1px solid rgb(212, 131, 252);
+   cursor: pointer;
+ }
