@@ -1,17 +1,29 @@
-
 "use strict";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+let ballArray = [];
+let gravity = 1;
+const textStart = document.querySelector(".text");
+let lastTime = 0; 
+
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-let ballArray = [];
-const gravity = 1;
-const textStart = document.querySelector(".text");
 
+window.addEventListener("resize", function () {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
 
-window.addEventListener("resize", resizeCanvas);
-canvas.addEventListener("click", createNewBall);
+canvas.addEventListener("click", function (e) {
+  var mouse = {
+    x: e.clientX,
+    y: e.clientY,
+  };
+  var ball = new Ball(mouse.x, mouse.y);
+  ballArray.push(ball);
+  textStart.classList.add("hide");
+});
 
 class Ball {
   constructor(x, y) {
@@ -55,18 +67,10 @@ class Ball {
       const otherSpeedNormal =
         (otherBall.speedX * dx + otherBall.speedY * dy) / distance;
 
-      const restitution = 1;
+      const restitution = 0.2; 
 
-      const thisNewSpeedNormal =
-        (restitution * otherMass * (otherSpeedNormal - thisSpeedNormal) +
-          thisMass * thisSpeedNormal +
-          otherMass * otherSpeedNormal) /
-        (thisMass + otherMass);
-      const otherNewSpeedNormal =
-        (restitution * thisMass * (thisSpeedNormal - otherSpeedNormal) +
-          thisMass * thisSpeedNormal +
-          otherMass * otherSpeedNormal) /
-        (thisMass + otherMass);
+      const thisNewSpeedNormal = (restitution * otherMass * (otherSpeedNormal - thisSpeedNormal) + thisMass * thisSpeedNormal + otherMass * otherSpeedNormal) / (thisMass + otherMass);
+      const otherNewSpeedNormal = (restitution * thisMass * (thisSpeedNormal - otherSpeedNormal) + thisMass * thisSpeedNormal + otherMass * otherSpeedNormal) / (thisMass + otherMass);
 
       this.speedX += (thisNewSpeedNormal - thisSpeedNormal) * dx / distance;
       this.speedY += (thisNewSpeedNormal - thisSpeedNormal) * dy / distance;
@@ -77,12 +81,12 @@ class Ball {
     }
   }
 
-  update() {
+  update(deltaTime) {
     this.draw();
-    this.speedY += gravity;
+    this.speedY += gravity * deltaTime;
 
-    this.x += this.speedX;
-    this.y += this.speedY;
+    this.x += this.speedX * deltaTime;
+    this.y += this.speedY * deltaTime;
 
     for (let i = 0; i < ballArray.length; i++) {
       const otherBall = ballArray[i];
@@ -92,7 +96,7 @@ class Ball {
     }
 
     const friction = 0.3;
-    this.speedX *= 1 - friction;
+    this.speedX *= 1 - friction * deltaTime;
 
     if (this.x + this.radius > canvas.width) {
       this.x = canvas.width - this.radius;
@@ -112,31 +116,22 @@ class Ball {
   }
 }
 
-function handleBalls() {
-  for (const ball of ballArray) {
-    ball.update();
+function handle(deltaTime) {
+  for (var i = 0; i < ballArray.length; i++) {
+    ballArray[i].update(deltaTime);
   }
 }
 
-function animate() {
+function animate(currentTime) {
+  const deltaTime = (currentTime - lastTime) / 50;
+  lastTime = currentTime;
+  
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  handleBalls();
+  handle(deltaTime);
   requestAnimationFrame(animate);
 }
 
-animate();
-
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-
-function createNewBall(e) {
-  const mouse = { x: e.clientX, y: e.clientY };
-  const ball = new Ball(mouse.x, mouse.y);
-  ballArray.push(ball);
-  textStart.classList.add("hide");
-}
+requestAnimationFrame(animate);
 
 const clearButton = document.querySelector(".clear-button");
 clearButton.addEventListener("click", function () {
