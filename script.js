@@ -1,28 +1,17 @@
+
 "use strict";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-let ballArray = [];
-let gravity = 1;
-const textStart = document.querySelector(".text");
-
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+let ballArray = [];
+const gravity = 1;
+const textStart = document.querySelector(".text");
 
-window.addEventListener("resize", function () {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
 
-canvas.addEventListener("click", function (e) {
-  var mouse = {
-    x: e.clientX,
-    y: e.clientY,
-  };
-  var ball = new Ball(mouse.x, mouse.y);
-  ballArray.push(ball);
-  textStart.classList.add("hide");
-});
+window.addEventListener("resize", resizeCanvas);
+canvas.addEventListener("click", createNewBall);
 
 class Ball {
   constructor(x, y) {
@@ -43,6 +32,51 @@ class Ball {
     ctx.closePath();
   }
 
+  checkCollision(otherBall) {
+    const dx = otherBall.x - this.x;
+    const dy = otherBall.y - this.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const minDistance = this.radius + otherBall.radius;
+
+    if (distance <= minDistance) {
+      const collisionAngle = Math.atan2(dy, dx);
+
+      const overlap = minDistance - distance;
+
+      this.x -= overlap * Math.cos(collisionAngle);
+      this.y -= overlap * Math.sin(collisionAngle);
+      otherBall.x += overlap * Math.cos(collisionAngle);
+      otherBall.y += overlap * Math.sin(collisionAngle);
+
+      const thisMass = this.radius ** 3;
+      const otherMass = otherBall.radius ** 3;
+
+      const thisSpeedNormal = (this.speedX * dx + this.speedY * dy) / distance;
+      const otherSpeedNormal =
+        (otherBall.speedX * dx + otherBall.speedY * dy) / distance;
+
+      const restitution = 1;
+
+      const thisNewSpeedNormal =
+        (restitution * otherMass * (otherSpeedNormal - thisSpeedNormal) +
+          thisMass * thisSpeedNormal +
+          otherMass * otherSpeedNormal) /
+        (thisMass + otherMass);
+      const otherNewSpeedNormal =
+        (restitution * thisMass * (thisSpeedNormal - otherSpeedNormal) +
+          thisMass * thisSpeedNormal +
+          otherMass * otherSpeedNormal) /
+        (thisMass + otherMass);
+
+      this.speedX += (thisNewSpeedNormal - thisSpeedNormal) * dx / distance;
+      this.speedY += (thisNewSpeedNormal - thisSpeedNormal) * dy / distance;
+      otherBall.speedX +=
+        (otherNewSpeedNormal - otherSpeedNormal) * dx / distance;
+      otherBall.speedY +=
+        (otherNewSpeedNormal - otherSpeedNormal) * dy / distance;
+    }
+  }
+
   update() {
     this.draw();
     this.speedY += gravity;
@@ -53,55 +87,11 @@ class Ball {
     for (let i = 0; i < ballArray.length; i++) {
       const otherBall = ballArray[i];
       if (otherBall !== this) {
-        const dx = otherBall.x - this.x;
-        const dy = otherBall.y - this.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const minDistance = this.radius + otherBall.radius;
-
-        if (distance <= minDistance) {
-          const collisionAngle = Math.atan2(dy, dx);
-
-          const overlap = minDistance - distance;
-
-          this.x -= overlap * Math.cos(collisionAngle);
-          this.y -= overlap * Math.sin(collisionAngle);
-          otherBall.x += overlap * Math.cos(collisionAngle);
-          otherBall.y += overlap * Math.sin(collisionAngle);
-
-          const thisSpeed = Math.sqrt(this.speedX ** 2 + this.speedY ** 2);
-          const otherSpeed = Math.sqrt(
-            otherBall.speedX ** 2 + otherBall.speedY ** 2
-          );
-          const thisDirection = Math.atan2(this.speedY, this.speedX);
-          const otherDirection = Math.atan2(otherBall.speedY, otherBall.speedX);
-          const collisionNormal = collisionAngle + Math.PI / 2;
-
-          const thisNewSpeedX =
-            thisSpeed * Math.cos(thisDirection - collisionNormal);
-          const thisNewSpeedY =
-            thisSpeed * Math.sin(thisDirection - collisionNormal);
-          const otherNewSpeedX =
-            otherSpeed * Math.cos(otherDirection - collisionNormal);
-          const otherNewSpeedY =
-            otherSpeed * Math.sin(otherDirection - collisionNormal);
-
-          this.speedX =
-            otherNewSpeedX * Math.cos(collisionNormal) +
-            thisNewSpeedX * Math.cos(collisionNormal + Math.PI / 2);
-          this.speedY =
-            otherNewSpeedX * Math.sin(collisionNormal) +
-            thisNewSpeedX * Math.sin(collisionNormal + Math.PI / 2);
-          otherBall.speedX =
-            thisNewSpeedY * Math.cos(collisionNormal) +
-            otherNewSpeedY * Math.cos(collisionNormal + Math.PI / 2);
-          otherBall.speedY =
-            thisNewSpeedY * Math.sin(collisionNormal) +
-            otherNewSpeedY * Math.sin(collisionNormal + Math.PI / 2);
-        }
+        this.checkCollision(otherBall);
       }
     }
 
-    const friction = 0.03;
+    const friction = 0.3;
     this.speedX *= 1 - friction;
 
     if (this.x + this.radius > canvas.width) {
@@ -114,27 +104,39 @@ class Ball {
 
     if (this.y + this.radius > canvas.height) {
       this.y = canvas.height - this.radius;
-      this.speedY *= -1;
+      this.speedY *= -0.8;
     } else if (this.y - this.radius < 0) {
       this.y = this.radius;
-      this.speedY *= -1;
+      this.speedY *= -0.8;
     }
   }
 }
 
-function handle() {
-  for (var i = 0; i < ballArray.length; i++) {
-    ballArray[i].update();
+function handleBalls() {
+  for (const ball of ballArray) {
+    ball.update();
   }
 }
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  handle();
+  handleBalls();
   requestAnimationFrame(animate);
 }
 
 animate();
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function createNewBall(e) {
+  const mouse = { x: e.clientX, y: e.clientY };
+  const ball = new Ball(mouse.x, mouse.y);
+  ballArray.push(ball);
+  textStart.classList.add("hide");
+}
 
 const clearButton = document.querySelector(".clear-button");
 clearButton.addEventListener("click", function () {
