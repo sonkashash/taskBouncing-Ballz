@@ -123,7 +123,7 @@ function handle(deltaTime) {
 }
 
 function animate(currentTime) {
-  const deltaTime = (currentTime - lastTime) / 50;
+  const deltaTime = (currentTime - lastTime) / 30;
   lastTime = currentTime;
   
   ctx.clearRect(0, 0, canvas.width, canvas.height);
