@@ -9,6 +9,7 @@
  }
 
  #canvas {
+   /* background: url("img/space.jpeg"); */
    background: url("img/space.jpeg");
    background-size: cover;
  }

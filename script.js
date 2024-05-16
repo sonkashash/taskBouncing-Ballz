@@ -60,14 +60,14 @@ class Ball {
       otherBall.x += overlap * Math.cos(collisionAngle);
       otherBall.y += overlap * Math.sin(collisionAngle);
 
-      const thisMass = this.radius ** 3;
-      const otherMass = otherBall.radius ** 3;
+      const thisMass = Math.PI * this.radius ** 3;
+      const otherMass = Math.PI * otherBall.radius ** 3;
 
       const thisSpeedNormal = (this.speedX * dx + this.speedY * dy) / distance;
       const otherSpeedNormal =
         (otherBall.speedX * dx + otherBall.speedY * dy) / distance;
 
-      const restitution = 0.2; 
+      const restitution = 1; //Think abour this number
 
       const thisNewSpeedNormal = (restitution * otherMass * (otherSpeedNormal - thisSpeedNormal) + thisMass * thisSpeedNormal + otherMass * otherSpeedNormal) / (thisMass + otherMass);
       const otherNewSpeedNormal = (restitution * thisMass * (thisSpeedNormal - otherSpeedNormal) + thisMass * thisSpeedNormal + otherMass * otherSpeedNormal) / (thisMass + otherMass);
