@@ -5,7 +5,9 @@ const ctx = canvas.getContext("2d");
 let ballArray = [];
 let gravity = 1;
 const textStart = document.querySelector(".text");
-let lastTime = 0; 
+let lastTime = 0;
+let deleteMode = false;
+const countdownMessage = document.querySelector(".countdown-message");
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -60,30 +62,43 @@ class Ball {
       otherBall.x += overlap * Math.cos(collisionAngle);
       otherBall.y += overlap * Math.sin(collisionAngle);
 
-      const thisMass = Math.PI * this.radius ** 3;
-      const otherMass = Math.PI * otherBall.radius ** 3;
+      const thisMass = 1.33 * Math.PI * this.radius ** 3;
+      const otherMass = 1.33 * Math.PI * otherBall.radius ** 3;
 
       const thisSpeedNormal = (this.speedX * dx + this.speedY * dy) / distance;
       const otherSpeedNormal =
         (otherBall.speedX * dx + otherBall.speedY * dy) / distance;
 
-      const restitution = 1; //Think abour this number
+      const restitution = 0.9; //Think abour this number
 
-      const thisNewSpeedNormal = (restitution * otherMass * (otherSpeedNormal - thisSpeedNormal) + thisMass * thisSpeedNormal + otherMass * otherSpeedNormal) / (thisMass + otherMass);
-      const otherNewSpeedNormal = (restitution * thisMass * (thisSpeedNormal - otherSpeedNormal) + thisMass * thisSpeedNormal + otherMass * otherSpeedNormal) / (thisMass + otherMass);
+      const thisNewSpeedNormal =
+        (restitution * otherMass * (otherSpeedNormal - thisSpeedNormal) +
+          thisMass * thisSpeedNormal +
+          otherMass * otherSpeedNormal) /
+        (thisMass + otherMass);
+      const otherNewSpeedNormal =
+        (restitution * thisMass * (thisSpeedNormal - otherSpeedNormal) +
+          thisMass * thisSpeedNormal +
+          otherMass * otherSpeedNormal) /
+        (thisMass + otherMass);
 
-      this.speedX += (thisNewSpeedNormal - thisSpeedNormal) * dx / distance;
-      this.speedY += (thisNewSpeedNormal - thisSpeedNormal) * dy / distance;
+      this.speedX += ((thisNewSpeedNormal - thisSpeedNormal) * dx) / distance;
+      this.speedY += ((thisNewSpeedNormal - thisSpeedNormal) * dy) / distance;
       otherBall.speedX +=
-        (otherNewSpeedNormal - otherSpeedNormal) * dx / distance;
+        ((otherNewSpeedNormal - otherSpeedNormal) * dx) / distance;
       otherBall.speedY +=
-        (otherNewSpeedNormal - otherSpeedNormal) * dy / distance;
+        ((otherNewSpeedNormal - otherSpeedNormal) * dy) / distance;
     }
   }
 
   update(deltaTime) {
+    if (deleteMode) {
+      this.speedY = -20; // Move balls upwards
+    } else {
+      this.speedY += gravity * deltaTime;
+    }
     this.draw();
-    this.speedY += gravity * deltaTime;
+    // this.speedY += gravity * deltaTime;
 
     this.x += this.speedX * deltaTime;
     this.y += this.speedY * deltaTime;
@@ -95,7 +110,7 @@ class Ball {
       }
     }
 
-    const friction = 0.3;
+    const friction = 0.2;
     this.speedX *= 1 - friction * deltaTime;
 
     if (this.x + this.radius > canvas.width) {
@@ -105,27 +120,31 @@ class Ball {
       this.x = this.radius;
       this.speedX *= -1;
     }
-
-    if (this.y + this.radius > canvas.height) {
-      this.y = canvas.height - this.radius;
-      this.speedY *= -0.8;
-    } else if (this.y - this.radius < 0) {
-      this.y = this.radius;
-      this.speedY *= -0.8;
+    if (!deleteMode) {
+      if (this.y + this.radius > canvas.height) {
+        this.y = canvas.height - this.radius;
+        this.speedY *= -0.8;
+      } else if (this.y - this.radius < 0) {
+        this.y = this.radius;
+        this.speedY *= -0.8;
+      }
     }
   }
 }
 
 function handle(deltaTime) {
-  for (var i = 0; i < ballArray.length; i++) {
+  for (var i = ballArray.length - 1; i >= 0; i--) {
     ballArray[i].update(deltaTime);
+    if (ballArray[i].y + ballArray[i].radius < 0) {
+      ballArray.splice(i, 1);
+    }
   }
 }
 
 function animate(currentTime) {
   const deltaTime = (currentTime - lastTime) / 30;
   lastTime = currentTime;
-  
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   handle(deltaTime);
   requestAnimationFrame(animate);
@@ -135,6 +154,23 @@ requestAnimationFrame(animate);
 
 const clearButton = document.querySelector(".clear-button");
 clearButton.addEventListener("click", function () {
-  ballArray = [];
-  textStart.classList.remove("hide");
+  if (ballArray.length >= 1) {
+    deleteMode = true;
+    canvas.style.pointerEvents = "none";
+    let countdown = 5;
+    countdownMessage.classList.remove("hide");
+    countdownMessage.textContent = `You can continue in ${countdown}`;
+    const intervalId = setInterval(() => {
+      countdown--;
+      if (countdown > 0) {
+        countdownMessage.textContent = `You can continue in ${countdown}`;
+      } else {
+        clearInterval(intervalId);
+        countdownMessage.classList.add("hide");
+        canvas.style.pointerEvents = "auto";
+        deleteMode = false;
+        textStart.classList.remove("hide");
+      }
+    }, 1000);
+  }
 });
