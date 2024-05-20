@@ -72,3 +72,10 @@
    z-index: 1;
    color: white;
  }
+
+ @media (max-width: 1200px) {
+   .countdown-message {
+     font-size: 50px;
+     right: 10%;
+   }
+ }

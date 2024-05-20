@@ -18,11 +18,11 @@ window.addEventListener("resize", function () {
 });
 
 canvas.addEventListener("click", function (e) {
-  var mouse = {
+  const mouse = {
     x: e.clientX,
     y: e.clientY,
   };
-  var ball = new Ball(mouse.x, mouse.y);
+  const ball = new Ball(mouse.x, mouse.y);
   ballArray.push(ball);
   textStart.classList.add("hide");
 });
@@ -34,6 +34,8 @@ class Ball {
     this.radius = Math.random() * 80;
     this.speedX = Math.random() * 2;
     this.speedY = Math.random() * 2;
+    this.tail = []; // Array to store tail positions
+    this.maxtailLength = 10; // Maximum length of the tail
   }
 
   draw() {
@@ -44,6 +46,17 @@ class Ball {
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fill();
     ctx.closePath();
+
+    // Draw the tail
+    for (let i = 0; i < this.tail.length; i++) {
+      const pos = this.tail[i];
+      const alpha = (i + 1) / this.tail.length;
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(227, 189, 246, ${alpha})`;
+      ctx.arc(pos.x, pos.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.closePath();
+    }
   }
 
   checkCollision(otherBall) {
@@ -65,17 +78,14 @@ class Ball {
       const thisMass = 1.33 * Math.PI * this.radius ** 3;
       const otherMass = 1.33 * Math.PI * otherBall.radius ** 3;
 
-      const thisSpeedNormal = (this.speedX * dx + this.speedY * dy) / distance;
-      const otherSpeedNormal =
-        (otherBall.speedX * dx + otherBall.speedY * dy) / distance;
+      // const thisSpeedNormal = (this.speedX * dx + this.speedY * dy) / distance;
+      // const otherSpeedNormal = (otherBall.speedX * dx + otherBall.speedY * dy) / distance;
+      const thisSpeedNormal = this.speedX * Math.cos(collisionAngle) + this.speedY * Math.sin(collisionAngle);
+      const otherSpeedNormal = otherBall.speedX * Math.cos(collisionAngle) + otherBall.speedY * Math.sin(collisionAngle);
 
       const restitution = 0.9; //Think abour this number
 
-      const thisNewSpeedNormal =
-        (restitution * otherMass * (otherSpeedNormal - thisSpeedNormal) +
-          thisMass * thisSpeedNormal +
-          otherMass * otherSpeedNormal) /
-        (thisMass + otherMass);
+      const thisNewSpeedNormal = (restitution * otherMass * (otherSpeedNormal - thisSpeedNormal) + thisMass * thisSpeedNormal + otherMass * otherSpeedNormal) / (thisMass + otherMass);
       const otherNewSpeedNormal =
         (restitution * thisMass * (thisSpeedNormal - otherSpeedNormal) +
           thisMass * thisSpeedNormal +
@@ -97,6 +107,15 @@ class Ball {
     } else {
       this.speedY += gravity * deltaTime;
     }
+
+    // Store current position in the tail array
+    this.tail.push({ x: this.x, y: this.y });
+
+    // Limit the length of the tail array
+    if (this.tail.length > this.maxtailLength) {
+      this.tail.shift();
+    }
+
     this.draw();
     // this.speedY += gravity * deltaTime;
 
@@ -133,7 +152,7 @@ class Ball {
 }
 
 function handle(deltaTime) {
-  for (var i = ballArray.length - 1; i >= 0; i--) {
+  for (let i = ballArray.length - 1; i >= 0; i--) {
     ballArray[i].update(deltaTime);
     if (ballArray[i].y + ballArray[i].radius < 0) {
       ballArray.splice(i, 1);
