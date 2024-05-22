@@ -101,7 +101,9 @@
 
  @media (max-width: 1200px) {
    .countdown-message {
-     font-size: 50px;
+    top: 20%;
+    left: 18%;
+     font-size: 80px;
      right: 10%;
    }
  }
