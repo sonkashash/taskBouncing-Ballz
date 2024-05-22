@@ -53,6 +53,7 @@ class Ball {
       const alpha = (i + 1) / this.tail.length;
       ctx.beginPath();
       ctx.fillStyle = `rgba(227, 189, 246, ${alpha})`;
+      // ctx.arc(pos.x, pos.y, this.radius * i / 10, 0, Math.PI * 2);
       ctx.arc(pos.x, pos.y, this.radius, 0, Math.PI * 2);
       ctx.fill();
       ctx.closePath();
@@ -80,24 +81,35 @@ class Ball {
 
       // const thisSpeedNormal = (this.speedX * dx + this.speedY * dy) / distance;
       // const otherSpeedNormal = (otherBall.speedX * dx + otherBall.speedY * dy) / distance;
-      const thisSpeedNormal = this.speedX * Math.cos(collisionAngle) + this.speedY * Math.sin(collisionAngle);
-      const otherSpeedNormal = otherBall.speedX * Math.cos(collisionAngle) + otherBall.speedY * Math.sin(collisionAngle);
+      const thisSpeedNormal =
+        this.speedX * Math.cos(collisionAngle) +
+        this.speedY * Math.sin(collisionAngle);
+      const otherSpeedNormal =
+        otherBall.speedX * Math.cos(collisionAngle) +
+        otherBall.speedY * Math.sin(collisionAngle);
 
       const restitution = 0.9; //Think abour this number
 
-      const thisNewSpeedNormal = (restitution * otherMass * (otherSpeedNormal - thisSpeedNormal) + thisMass * thisSpeedNormal + otherMass * otherSpeedNormal) / (thisMass + otherMass);
+      const thisNewSpeedNormal =
+        (restitution * otherMass * (otherSpeedNormal - thisSpeedNormal) +
+          thisMass * thisSpeedNormal +
+          otherMass * otherSpeedNormal) /
+        (thisMass + otherMass);
       const otherNewSpeedNormal =
         (restitution * thisMass * (thisSpeedNormal - otherSpeedNormal) +
           thisMass * thisSpeedNormal +
           otherMass * otherSpeedNormal) /
         (thisMass + otherMass);
+      // const otherNewSpeedNormal = (thisMass * thisSpeedNormal + otherMass * otherSpeedNormal - thisMass * thisNewSpeedNormal) / thisMass;
 
-      this.speedX += ((thisNewSpeedNormal - thisSpeedNormal) * dx) / distance;
-      this.speedY += ((thisNewSpeedNormal - thisSpeedNormal) * dy) / distance;
+      this.speedX +=
+        (thisNewSpeedNormal - thisSpeedNormal) * Math.cos(collisionAngle);
+      this.speedY +=
+        (thisNewSpeedNormal - thisSpeedNormal) * Math.sin(collisionAngle);
       otherBall.speedX +=
-        ((otherNewSpeedNormal - otherSpeedNormal) * dx) / distance;
+        (otherNewSpeedNormal - otherSpeedNormal) * Math.cos(collisionAngle);
       otherBall.speedY +=
-        ((otherNewSpeedNormal - otherSpeedNormal) * dy) / distance;
+        (otherNewSpeedNormal - otherSpeedNormal) * Math.sin(collisionAngle);
     }
   }
 
@@ -170,6 +182,17 @@ function animate(currentTime) {
 }
 
 requestAnimationFrame(animate);
+
+const spawnButton = document.querySelector(".button-ball-appear");
+spawnButton.addEventListener("click", function () {
+  const mouseX = canvas.width / 2;
+  const mouseY = 0;
+  const randomNumber = Math.round(Math.random() * 10);
+  for (let i = 0; i < randomNumber; i++) {
+    const ball = new Ball(mouseX, mouseY);
+    ballArray.push(ball);
+  }
+});
 
 const clearButton = document.querySelector(".clear-button");
 clearButton.addEventListener("click", function () {
