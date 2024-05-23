@@ -1,6 +1,6 @@
-# Task Bouncing-Ballz :balloon:
+# Bouncing-Ballz :balloon:
 
-## Description 
+## Task 
 Develop a web application using html5 canvas, where users can click on the screen to spawn a circle. This circle should realistically obey Earth-like gravity, moving vertically and bouncing upon hitting the bottom of the screen, with a dampening effect on each bounce until it comes to a stop. There can be multiple circle instances on screen at a time.
 
 ## Implementation
@@ -11,27 +11,24 @@ Demonstration is [here](https://famous-empanada-69f2cb.netlify.app)
   ```
   <canvas id="canvas"></canvas> 
   
-   #canvas { 
-  background: url("img/space.jpeg");
-  background-size: cover;}
-  
 
 - [x] Creating a new ball in balls array after click (copy of class Ball) **TypeScript**
 ```
-var mouse = {
-  x: 0,
-  y: 0,
-};
-canvas.addEventListener("click", function (e) {
-  mouse.x = e.x;
-  mouse.y = e.y;
-  var ball = new Ball();
+canvas.addEventListener("click", function (e: MouseEvent) {
+  const mouse = {
+    x: e.clientX,
+    y: e.clientY,
+  };
+  const ball = new Ball(mouse.x, mouse.y);
   ballArray.push(ball);
+  textStart.classList.add("hide");
 });
 ```
 
 
 - [x] Make animation **Typescript**
+The collision of the balls and their velocities are calculated based on their size by the law of conservation of momentum and the law of conservation of energy.
+
 
 ```
 function handle() {
@@ -42,13 +39,8 @@ function handle() {
   }
 }
 
-/// *FUNCTIONS draw(), updated() DESCRIBED IN CLASS "Ball"*
+/// *FUNCTIONS draw(),checkCollision(otherBall: Ball), update(deltaTime: number) DESCRIBED IN CLASS "Ball"*
 
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  handle();
-  requestAnimationFrame(animate);
-}
 ```
 
 - [x] Transformation typescript in javascript by command *tsc script.js*
@@ -58,16 +50,7 @@ function animate() {
   ```
 - [ ] Stop animation
 
-## Some troubles with "Stop animation"
+## Some points for improvement
 
 
-> <strong style="green">Note</strong><br/>
-The function **animation()** (whichworks cyclically) does not stop after the ball hits the ground. I tried to use setInterval, but face new trouble, where function was stopped after some time and new balls could not be created. You could see using code below.
-
-```
- setTimeout(function greet() {
-     if (ballArray.length>=1 && JSON.parse((ballArray[ballArray.length-1].speedY))==0 ) {
-     cancelAnimationFrame(myReq)
-  }
-}, 10000)
-```
+When there are too many balls on the ‘ground’, they begin to shake endlessly as the checkCollision method is constantly triggered. I'm working on improving this now.
