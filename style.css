@@ -2,7 +2,7 @@
    box-sizing: border-box;
    margin: 0;
    padding: 0;
-   font-family: "Jersey 10", monospace;
+   font-family: "Jersey 10", sans-serif;
  }
 
  *:not(button):hover {
@@ -10,8 +10,6 @@
  }
 
  #canvas {
-   /* background: url("img/space.jpeg"); */
-   /* background: url("img/planet_background.jpeg"); */
    background-color: #560EAD;
    background-size: cover;
  }
@@ -21,7 +19,6 @@
  }
 
  .text {
-   font-family: "Jersey 10", sans-serif;
    position: absolute;
    top: 30px;
    left: 35%;
@@ -43,11 +40,10 @@
  }
 
  .clear-button {
-   font-family: "Jersey 10", sans-serif;
    position: absolute;
    width: 200px;
-   top: 35%;
-   right: 10%;
+   top: 30%;
+   right: 5%;
    padding: 10px 20px;
    font-size: 40px;
    background-color: transparent;
@@ -66,8 +62,8 @@
 
  .countdown-message {
    position: absolute;
-   top: 50%;
-   left: 30%;
+   top: 40%;
+   left: 5%;
    font-size: 100px;
    color: #ffffff;
    z-index: 1;
@@ -76,8 +72,8 @@
 
  .button-ball-appear {
    position: absolute;
-   top: 50%;
-   right: 10%;
+   top: 55%;
+   right: 5%;
    width: 200px;
    height: 100px;
    color: rgb(212, 131, 252);
@@ -101,8 +97,8 @@
 
  @media (max-width: 1200px) {
    .countdown-message {
-    top: 20%;
-    left: 18%;
+     top: 20%;
+     left: 18%;
      font-size: 80px;
      right: 10%;
    }
