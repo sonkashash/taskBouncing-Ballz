@@ -44,11 +44,10 @@ function handle() {
 ```
 
 - [x] Transformation typescript in javascript by command *tsc script.js*
-- [x] Сonnecting js file to html  **HTML**
+- [x] Сonnecting js file to HTML
   ```
    <script src="script.js"></script>
   ```
-- [ ] Stop animation
 
 ## Some points for improvement
 
